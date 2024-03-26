@@ -1,4 +1,6 @@
+from django.http import HttpResponse
 from django.shortcuts import render
+from django.urls import reverse
 
 DATA = {
     'omlet': {
@@ -16,15 +18,24 @@ DATA = {
         'сыр, ломтик': 1,
         'помидор, ломтик': 1,
     },
-    # можете добавить свои рецепты ;)
 }
+def get_recipe(dish: str, request) -> dict:
+    servings = int(request.GET.get("servings", 1))
+    return {'recipe': {ingredient: count * servings for ingredient, count in DATA.get(dish).items()}, 'servings': servings}
 
-# Напишите ваш обработчик. Используйте DATA как источник данных
-# Результат - render(request, 'calculator/index.html', context)
-# В качестве контекста должен быть передан словарь с рецептом:
-# context = {
-#   'recipe': {
-#     'ингредиент1': количество1,
-#     'ингредиент2': количество2,
-#   }
-# }
+def show_default(request) -> HttpResponse:
+    links = {
+        'omlet': ["Показать рецепт омлета", reverse("omlet")],
+        'pasta': ["Показать рецепт пасты", reverse("pasta")],
+        'buter': ["Показать рецепт бутера", reverse("buter")]
+    }
+    return render(request, "calculator\main.html", links)
+
+def show_omlet(request) -> HttpResponse:
+    return render(request, "calculator\index.html", get_recipe('omlet', request))
+
+def show_pasta(request) -> HttpResponse:
+    return render(request, "calculator\index.html", get_recipe('pasta', request))
+
+def show_buter(request) -> HttpResponse:
+    return render(request, "calculator\index.html", get_recipe('buter', request))

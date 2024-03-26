@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Рецепты</title>
-</head>
-<body>
-{% for ingredient, amount in recipe.items %}
-    <p>{{ ingredient }}: {{ amount }}</p>
-{% empty %}
-    <p>Такого рецепта не знаю :(</p>
-{% endfor %}
-</body>
+{% load static %}
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+        <title>Рецепты</title>
+    </head>
+    <body>
+        <p id="servings_counter">Текущее количество порций: {{ servings }}</p>
+        <div id="main_content">
+            <p>Введите количество порций:</p>
+            <div id="servings_div">
+                <input type="number" min="1" value="1">
+                <button onclick="window.location.search = 'servings=' + previousElementSibling.value">Подтвердить</button>
+            </div>
+            {% for ingredient, amount in recipe.items %}
+                <p>{{ ingredient }}: {{ amount }}</p>
+            {% endfor %}
+        </div>
+        <a id="back_link" href="/">Назад</a>
+    </body>
 </html>
