@@ -1,8 +1,7 @@
-from rest_framework.routers import DefaultRouter
-
+from rest_framework.routers import SimpleRouter
 from logistic.views import ProductViewSet, StockViewSet
 
-router = DefaultRouter()
+router = SimpleRouter()
 router.register('products', ProductViewSet)
 router.register('stocks', StockViewSet)
 
