@@ -1,30 +1,27 @@
-from django.conf import settings
 from django.db import models
-
-
-class AdvertisementStatusChoices(models.TextChoices):
-    """Статусы объявления."""
-
-    OPEN = "OPEN", "Открыто"
-    CLOSED = "CLOSED", "Закрыто"
-
+from django.contrib.auth.models import User
 
 class Advertisement(models.Model):
-    """Объявление."""
+    
+    class Meta:
+        verbose_name = 'Обьявление'
+        verbose_name_plural = 'Обьявления'
+    
+    class StatusChoices(models.TextChoices):
+        OPEN = "Открыто"
+        CLOSED = "Закрыто"
 
-    title = models.TextField()
-    description = models.TextField(default='')
-    status = models.TextField(
-        choices=AdvertisementStatusChoices.choices,
-        default=AdvertisementStatusChoices.OPEN
-    )
-    creator = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    status = models.CharField(choices = StatusChoices.choices, default = StatusChoices.OPEN, max_length = 7, verbose_name='Статус')
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='adverts', verbose_name='Автор')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'Обьявление о {self.title} автором {self.creator}'
+    
+
+class UserFavouriteAdverts(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favourite_adverts')
+    advertisements = models.ForeignKey(Advertisement, on_delete=models.CASCADE, related_name='in_favourite')
