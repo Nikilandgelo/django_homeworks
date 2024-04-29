@@ -1,16 +1,8 @@
-from django_filters import rest_framework as filters
-
+from django_filters import filterset, filters
 from students.models import Course
 
-
-class CourseFilter(filters.FilterSet):
-
-    id = filters.ModelMultipleChoiceFilter(
-        field_name="id",
-        to_field_name="id",
-        queryset=Course.objects.all(),
-    )
+class CourseFilter(filterset.FilterSet):
 
     class Meta:
         model = Course
-        fields = ("id", "name", )
+        fields = ["id", "name"]
