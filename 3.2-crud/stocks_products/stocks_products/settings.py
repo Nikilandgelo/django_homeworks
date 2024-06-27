@@ -1,5 +1,4 @@
 from pathlib import Path
-from dotenv import dotenv_values
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -52,13 +51,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'stocks_products.wsgi.application'
 
-env_values = dotenv_values(Path.joinpath(BASE_DIR, 'password.env'))
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'stocks_products',
-        'USER': 'postgres',
-        'PASSWORD': env_values.get("PASSWORD"),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
