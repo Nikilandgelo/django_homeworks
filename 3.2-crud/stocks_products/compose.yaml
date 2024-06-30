@@ -1,0 +1,44 @@
+networks:
+  backend:
+
+volumes:
+  postgresql_volume:
+  static_volume:
+
+services:
+  postgresql:
+    image: postgres:16.3-alpine
+    container_name: postgresql_db
+    env_file:
+      - enviroment.env
+    healthcheck:
+      test: pg_isready
+      interval: 5s
+      retries: 6
+    restart: unless-stopped
+    networks:
+      - backend
+    volumes:
+      - postgresql_volume:/var/lib/postgresql/data
+
+  django_app:
+    build: ./app/
+    container_name: django_application
+    depends_on:
+      - postgresql
+    env_file:
+      - enviroment.env
+    networks:
+      - backend
+    volumes:
+      - static_volume:/app/static
+  
+  nginx:
+    build: ./nginx/
+    container_name: nginx_server
+    ports:
+      - "8000:80"
+    networks:
+      - backend
+    volumes:
+      - static_volume:/static
